@@ -1,3 +1,7 @@
+# Image Resize Rectangle
+
+Resize, rectangle, center .gif, .jpeg, .png image files
+
 ## Example
 
 ```php
