@@ -2,7 +2,7 @@
   "name": "max_cohen/image-resize-rectangle",
   "description": "Resize, rectangle, center .gif, .jpeg, .png image files",
   "type": "library",
-  "license": "GPLv3",
+  "license": "GPL-3.0-only",
   "autoload": {
     "files": ["src/imageResizeRectangleCenter.php"]
   },
