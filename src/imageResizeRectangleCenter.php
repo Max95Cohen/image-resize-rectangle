@@ -1,6 +1,11 @@
 <?php
 
 function imageResizeRectangleCenter($file, $rectangle = 100, $center = false, $output = 'JPG') {
+    $pathInfo = pathinfo($file);
+
+    $dirname = $pathInfo['dirname'];
+    $filename = $pathInfo['filename'];
+
     list($width, $height, $type) = getimagesize($file);
 
     $dimension = ($width / $height);
@@ -41,25 +46,23 @@ function imageResizeRectangleCenter($file, $rectangle = 100, $center = false, $o
 
     imagecopyresampled($image, $source, 0, 0, $offsetX, $offsetY, $width_, $height_, $width, $height);
 
-    $file_ = $file . '_' . $rectangle;
+    $filename = $dirname . '/' . $filename . '_' . $rectangle;
 
     switch ($output) {
         case 'JPG':
-            $file_ .= '.jpeg';
-            imagejpeg($image, $file_, 100);
+            $filename .= '.jpeg';
+            imagejpeg($image, $filename, 100);
             break;
 
         case 'GIF':
-            $file_ .= '.gif';
-            imagegif($image, $file_);
+            $filename .= '.gif';
+            imagegif($image, $filename);
             break;
 
         case 'PNG':
-            $file_ .= '.png';
-            imagepng($image, $file_, 9);
-            break;
-
+            $filename .= '.png';
+            imagepng($image, $filename, 9);
     }
 
-    return $file_;
+    return $filename;
 }
