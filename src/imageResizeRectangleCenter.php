@@ -1,6 +1,16 @@
 <?php
 
-function imageResizeRectangleCenter($file, $rectangle = 100, $center = false, $output = 'JPG') {
+/**
+ * Resize image to rectangle shape and take center of image if you wish.
+ *
+ * @param string $file Path to current image file
+ * @param int $rectangle Size of new image
+ * @param false $center Take of image center
+ * @param bool $suffix Add a suffix size of image
+ * @param string $output Export type
+ * @return false|string
+ */
+function imageResizeRectangleCenter($file, $rectangle = 100, $center = false, $suffix = true, $output = 'JPG') {
     $pathInfo = pathinfo($file);
 
     $dirname = $pathInfo['dirname'];
@@ -46,7 +56,11 @@ function imageResizeRectangleCenter($file, $rectangle = 100, $center = false, $o
 
     imagecopyresampled($image, $source, 0, 0, $offsetX, $offsetY, $width_, $height_, $width, $height);
 
-    $filename = $dirname . '/' . $filename . '_' . $rectangle;
+    $filename = $dirname . '/' . $filename;
+
+    if ($suffix) {
+        $filename .= '_' . $rectangle;
+    }
 
     switch ($output) {
         case 'JPG':
