@@ -13,8 +13,11 @@
 function imageResizeRectangleCenter($file, $rectangle = 100, $center = false, $suffix = true, $output = 'JPG') {
     $pathInfo = pathinfo($file);
 
+    $extension = $pathInfo['extension'];
     $dirname = $pathInfo['dirname'];
     $filename = $pathInfo['filename'];
+
+    unset($pathInfo);
 
     list($width, $height, $type) = getimagesize($file);
 
@@ -40,6 +43,8 @@ function imageResizeRectangleCenter($file, $rectangle = 100, $center = false, $s
         }
     }
 
+    unset($dimension);
+
     switch ($type) {
         case 1:
             $source = imagecreatefromgif($file);
@@ -54,9 +59,16 @@ function imageResizeRectangleCenter($file, $rectangle = 100, $center = false, $s
             return false;
     }
 
+    unset($center, $type);
+
     imagecopyresampled($image, $source, 0, 0, $offsetX, $offsetY, $width_, $height_, $width, $height);
+    imagedestroy($source);
+
+    unset($source, $offsetX, $offsetX, $width, $width_, $height, $height_);
 
     $filename = $dirname . '/' . $filename;
+
+    unset($dirname);
 
     if ($suffix) {
         $filename .= '_' . $rectangle;
@@ -64,8 +76,8 @@ function imageResizeRectangleCenter($file, $rectangle = 100, $center = false, $s
 
     switch ($output) {
         case 'JPG':
-            $filename .= '.jpeg';
-            imagejpeg($image, $filename, 100);
+            $filename .= '.' . $extension;
+            imagejpeg($image, $filename, 85);
             break;
 
         case 'GIF':
@@ -77,6 +89,10 @@ function imageResizeRectangleCenter($file, $rectangle = 100, $center = false, $s
             $filename .= '.png';
             imagepng($image, $filename, 9);
     }
+
+    imagedestroy($image);
+
+    unset($suffix, $image);
 
     return $filename;
 }
