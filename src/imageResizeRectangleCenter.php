@@ -10,7 +10,14 @@
  * @param string $output Export type
  * @return false|string
  */
-function imageResizeRectangleCenter($file, $rectangle = 100, $center = false, $suffix = true, $output = 'JPG') {
+function imageResizeRectangleCenter(
+    $file,
+    $rectangle = 100,
+    $center = false,
+    $suffix = true,
+    $output = 'JPG',
+    $quality = 85
+) {
     $pathInfo = pathinfo($file);
 
     $extension = $pathInfo['extension'];
@@ -45,18 +52,30 @@ function imageResizeRectangleCenter($file, $rectangle = 100, $center = false, $s
 
     unset($dimension);
 
-    switch ($type) {
-        case 1:
-            $source = imagecreatefromgif($file);
-            break;
-        case 2:
-            $source = imagecreatefromjpeg($file);
-            break;
-        case 3:
-            $source = imagecreatefrompng($file);
-            break;
-        default:
-            return false;
+    if (defined('IMG_WEBP') && function_exists('imagecreatefromwebp')) {
+        $source = imagecreatefromwebp($file);
+    } elseif (defined('IMG_BMP') && function_exists('imagecreatefrombmp')) {
+        $source = imagecreatefrombmp($file);
+    } else {
+        switch ($type) {
+            case IMG_GIF:
+                $source = imagecreatefromgif($file);
+                break;
+            case IMG_JPEG:
+                $source = imagecreatefromjpeg($file);
+                break;
+            case IMG_PNG:
+                $source = imagecreatefrompng($file);
+                break;
+            case IMG_WBMP:
+                $source = imagecreatefromwbmp($file);
+                break;
+            case IMG_XPM:
+                $source = imagecreatefromxpm($file);
+                break;
+            default:
+                return false;
+        }
     }
 
     unset($center, $type);
@@ -77,7 +96,7 @@ function imageResizeRectangleCenter($file, $rectangle = 100, $center = false, $s
     switch ($output) {
         case 'JPG':
             $filename .= '.' . $extension;
-            imagejpeg($image, $filename, 85);
+            imagejpeg($image, $filename, $quality);
             break;
 
         case 'GIF':
@@ -87,7 +106,9 @@ function imageResizeRectangleCenter($file, $rectangle = 100, $center = false, $s
 
         case 'PNG':
             $filename .= '.png';
-            imagepng($image, $filename, 9);
+            $quality_ = floor($quality / 10);
+
+            imagepng($image, $filename, $quality_);
     }
 
     imagedestroy($image);

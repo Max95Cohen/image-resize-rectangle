@@ -1,6 +1,6 @@
 # Image Resize Rectangle
 
-Resize, rectangle, center .gif, .jpeg, .png image files
+Resize, rectangle, center .bmp, .gif, .jpeg, .png, .wbmp, .webp, .xpm image files
 
 ## Example
 
