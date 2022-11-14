@@ -8,7 +8,7 @@
  * @param false $center Take of image center
  * @param bool $suffix Add a suffix size of image
  * @param string $output Export type
- * @return false|string
+ * @return string
  */
 function imageResizeRectangleCenter(
     $file,
@@ -17,7 +17,8 @@ function imageResizeRectangleCenter(
     $suffix = true,
     $output = 'JPG',
     $quality = 85
-) {
+)
+{
     $pathInfo = pathinfo($file);
 
     $extension = $pathInfo['extension'];
@@ -52,10 +53,24 @@ function imageResizeRectangleCenter(
 
     unset($dimension);
 
-    if (defined('IMG_WEBP') && function_exists('imagecreatefromwebp')) {
+    if (
+        defined('IMAGETYPE_WEBP')
+        && function_exists('imagecreatefromwebp')
+        && exif_imagetype($file) == IMAGETYPE_WEBP
+    ) {
         $source = imagecreatefromwebp($file);
-    } elseif (defined('IMG_BMP') && function_exists('imagecreatefrombmp')) {
+    } elseif (
+        defined('IMAGETYPE_BMP')
+        && function_exists('imagecreatefrombmp')
+        && exif_imagetype($file) == IMAGETYPE_BMP
+    ) {
         $source = imagecreatefrombmp($file);
+    } elseif (
+            defined('IMAGETYPE_WBMP')
+            && function_exists('imagecreatefromwbmp')
+            && exif_imagetype($file) == IMAGETYPE_WBMP
+        ) {
+        $source = imagecreatefromwbmp($file);
     } else {
         switch ($type) {
             case IMG_GIF:
@@ -67,14 +82,8 @@ function imageResizeRectangleCenter(
             case IMG_PNG:
                 $source = imagecreatefrompng($file);
                 break;
-            case IMG_WBMP:
-                $source = imagecreatefromwbmp($file);
-                break;
-            case IMG_XPM:
-                $source = imagecreatefromxpm($file);
-                break;
             default:
-                return false;
+                return 'Not supported image type';
         }
     }
 
